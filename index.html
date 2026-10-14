@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>1 MILLION - Last Human Standing</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui;user-select:none;-webkit-tap-highlight-color:transparent}
+body{background:#000;color:#fff;overflow:hidden;height:100vh;height:100dvh;display:flex;flex-direction:column}
+header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1a1a1a;background:#0a0a0a;z-index:10}
+.logo{font-weight:900;font-size:18px;letter-spacing:-0.5px} .logo b{background:#fff;color:#000;padding:1px 8px;border-radius:6px;margin-left:3px}
+.live{font-size:10px;font-weight:900;background:#ff0033;color:#fff;padding:4px 10px;border-radius:100px;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden}
+.bg-number{position:absolute;font-size:42vw;font-weight:900;color:#0a0a0a;line-height:1;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;font-family:Space Grotesk}
+.card{position:relative;z-index:1;width:100%;max-width:420px;background:linear-gradient(180deg,#121212 0%,#0a0a0a 100%);border:2px solid #1e1e1e;border-radius:28px;padding:20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
+.huge{font-size:64px;font-weight:900;letter-spacing:-3px;line-height:0.9;font-family:Space Grotesk}
+.huge small{display:block;font-size:13px;letter-spacing:3px;color:#555;margin-top:6px}
+.timer{font-size:14px;font-weight:800;color:#777;margin-top:12px}
+.btn-primary{width:100%;padding:18px;border-radius:18px;border:3px solid #000;background:#fff;color:#000;font-weight:900;font-size:18px;letter-spacing:-0.5px;margin-top:16px;cursor:pointer;transition:0.1s}
+.btn-primary:active{transform:scale(0.97)}
+.btn-primary.yellow{background:#FFD600;border-color:#000}
+.progress{height:6px;background:#1a1a1a;border-radius:100px;overflow:hidden;margin-top:14px}
+.progress-bar{height:100%;background:#fff;transition:width 0.3s linear}
+.players{font-size:11px;font-weight:800;color:#666;margin-top:8px;letter-spacing:0.5px}
+.countries{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.country{font-size:9px;font-weight:800;background:#151515;border:1px solid #222;padding:4px 8px;border-radius:100px}
+.country.active{border-color:#fff;color:#fff}
+.game-area{position:relative;z-index:1;width:100%;max-width:420px}
+.emoji-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.emoji-btn{aspect-ratio:1;background:#151515;border:2px solid #222;border-radius:18px;font-size:32px;display:grid;place-items:center;cursor:pointer}
+.emoji-btn.odd{border-color:#FFD600;background:#FFD60020}
+.tapper{width:100%;height:240px;border-radius:24px;border:4px solid #222;display:grid;place-items:center;font-size:48px;font-weight:900;background:#0f0f0f;margin-top:16px;cursor:pointer;transition:0.15s}
+.tapper.green{background:#00FF88;color:#000;border-color:#00FF88}
+.tapper.red{background:#FF0033;color:#fff;border-color:#FF0033}
+.tapper.wait{background:#151515;color:#333}
+.share-card{margin-top:16px;padding:14px;background:#111;border:1px dashed #333;border-radius:16px;text-align:left}
+.bottom{padding:12px 16px;background:#0a0a0a;border-top:1px solid #1a1a1a;display:flex;justify-content:space-between;font-size:10px;font-weight:800;color:#555}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">1 MILLION <b>LIVE</b></div>
+<div style="display:flex;gap:8px;align-items:center"><span>20:00 UTC</span><span class="live">● LIVE</span></div>
+</header>
+<div class="center" id="center">
+<div class="bg-number" id="bgNumber">1M</div>
+<div class="card" id="lobby">
+<div style="font-size:11px;font-weight:900;letter-spacing:3px;color:#555">TODAY'S GAME</div>
+<div class="huge" id="playerCount">1,000,000<br><small>PLAYERS IN LOBBY</small></div>
+<div class="timer" id="countdown">NEXT GAME IN: 00:12:33 • 8PM UTC • ONE GAME PER DAY</div>
+<div class="progress"><div class="progress-bar" id="fillBar" style="width:72%"></div></div>
+<div class="players" id="playersText">🔥 742,891 JOINED • 257,109 SLOTS LEFT • NIGERIA #3</div>
+<div class="countries"><span class="country active">🇳🇬 NG 142k</span><span class="country">🇺🇸 US 198k</span><span class="country">🇮🇳 IN 176k</span><span class="country">🇧🇷 BR 89k</span><span class="country">🇬🇭 GH 34k</span></div>
+<button class="btn-primary yellow" id="joinBtn" onclick="joinGame()">TAP TO JOIN • 90 SECONDS TO WIN $500</button>
+<div style="font-size:10px;color:#444;margin-top:10px;font-weight:700">No login • No English needed • Works on Tecno • Last Human Wins</div>
+</div>
+<div class="game-area" id="game" style="display:none">
+<div style="display:flex;justify-content:space-between;font-weight:900;font-size:12px"><span id="roundLabel">ROUND 1 / 7</span><span id="aliveLabel" style="color:#00FF88">ALIVE: 1,000,000</span></div>
+<div class="progress" style="margin-top:8px"><div class="progress-bar" id="roundProgress" style="width:100%"></div></div>
+<div id="roundContent"></div>
+<div class="players" id="elimText" style="text-align:center;margin-top:12px">🪓 0 ELIMINATED</div>
+</div>
+<div class="card" id="result" style="display:none">
+<div class="huge" id="resultTitle">YOU DIED</div>
+<div class="timer" id="resultDesc">You died at #432,109</div>
+<div class="share-card"><div style="font-weight:900;font-size:12px">🔥 VIRAL SHARE CARD</div><div style="font-size:13px;margin-top:6px;line-height:1.4" id="shareText"></div></div>
+<button class="btn-primary" onclick="share()">SHARE TO WHATSAPP STATUS →</button>
+<button class="btn-primary" style="background:#151515;color:#fff;border-color:#222;margin-top:8px" onclick="location.reload()">TRY AGAIN TOMORROW 8PM UTC</button>
+</div>
+</div>
+<div class="bottom"><span>🌍 195 COUNTRIES • 1 GAME / DAY</span><span>POT: $500 • WARRI</span></div>
+<script>
+let state='lobby',playerAlive=true,alive=1000000,round=1,totalRounds=7,myRank=0,joined=742891,roundTimer,greenTime=0;
+function updateLobby(){joined+=Math.floor(Math.random()*120);if(joined>1000000)joined=1000000;document.getElementById('playerCount').innerHTML=`${joined.toLocaleString()}<br><small>PLAYERS IN LOBBY</small>`;document.getElementById('fillBar').style.width=(joined/1000000*100)+'%';document.getElementById('bgNumber').textContent=Math.floor(joined/1000)+'K';document.getElementById('playersText').textContent=`🔥 ${joined.toLocaleString()} JOINED • ${(1000000-joined).toLocaleString()} SLOTS LEFT • NIGERIA #${Math.floor(Math.random()*5+1)} • LIVE NOW`;}
+setInterval(updateLobby,800);
+function countdown(){let next=new Date();next.setUTCHours(20,0,0,0);if(next<new Date())next.setDate(next.getDate()+1);let diff=next-new Date();let h=Math.floor(diff/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);document.getElementById('countdown').textContent=`NEXT GAME IN: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} • 8PM UTC • ONE GAME PER DAY`;}
+setInterval(countdown,1000);
+function joinGame(){document.getElementById('joinBtn').textContent='JOINING...';setTimeout(()=>{document.getElementById('lobby').style.display='none';document.getElementById('game').style.display='block';startRound(1);},600);}
+function startRound(r){round=r;if(r>totalRounds){win();return;}document.getElementById('roundLabel').textContent=`ROUND ${r} / ${totalRounds}`;document.getElementById('aliveLabel').textContent=`ALIVE: ${alive.toLocaleString()}`;let content=document.getElementById('roundContent');content.innerHTML='';if(r===1){content.innerHTML=`<div style="font-weight:900;font-size:18px;margin-top:16px">TAP WHEN IT TURNS GREEN</div><div style="font-size:11px;color:#666">Tap too early = DIE</div><div class="tapper wait" id="tapper" onclick="tapGreen()">WAIT...</div>`;let delay=1500+Math.random()*3000;setTimeout(()=>{let el=document.getElementById('tapper');if(el){el.className='tapper green';el.textContent='TAP NOW!';greenTime=Date.now();}},delay);startProgress(6,()=>{if(playerAlive&&!greenTime)die('Too slow!');});}else if(r===2){let emojis=['🍕','🍕','🍕','🍕','🍕','🍕','🍔','🍕','🍕','🍕','🍕','🍕','🍕','🍕','🍕','🍕'];emojis.sort(()=>Math.random()-0.5);let html=`<div style="font-weight:900;font-size:18px;margin-top:16px">TAP THE ODD ONE OUT</div><div class="emoji-grid">`+emojis.map((e)=>`<div class="emoji-btn ${e==='🍔'?'odd':''}" onclick="tapOdd('${e}')">${e}</div>`).join('')+`</div>`;content.innerHTML=html;startProgress(10,()=>die('Too slow!'));}else if(r===3){content.innerHTML=`<div style="font-weight:900;font-size:18px;margin-top:16px">DON'T TAP IF RED</div><div class="tapper wait" id="tapper2">GET READY...</div>`;let seq=0;let intv=setInterval(()=>{seq++;let isGreen=Math.random()>0.5;let el=document.getElementById('tapper2');if(!el){clearInterval(intv);return;}if(seq>6){clearInterval(intv);if(playerAlive)nextRound();return;}el.className=isGreen?'tapper green':'tapper red';el.textContent=isGreen?'TAP!':'DON\'T TAP!';el.dataset.green=isGreen;el.onclick=()=>{if(el.dataset.green==='false')die('You tapped RED!');else{el.textContent='GOOD!';}};},900);startProgress(8,()=>{clearInterval(intv);if(playerAlive)nextRound();});}else if(r===4){content.innerHTML=`<div style="font-weight:900;font-size:18px;margin-top:16px">TAP 5 TIMES FAST</div><div class="tapper wait" id="tap5" style="font-size:22px">0 / 5</div>`;let count=0;document.getElementById('tap5').onclick=()=>{count++;document.getElementById('tap5').textContent=`${count} / 5`;if(count>=5)nextRound();};startProgress(7,()=>die('Too slow!'));}else if(r===5){content.innerHTML=`<div style="font-weight:900;font-size:18px;margin-top:16px">LAST 1,000 HUMANS</div><div class="tapper green" id="finalTap" onclick="nextRound()">TAP TO SURVIVE!</div>`;startProgress(5,()=>die('Eliminated'));}else if(r===6){content.innerHTML=`<div style="font-weight:900;font-size:18px;margin-top:16px">FINAL 10 HUMANS</div><div style="font-size:11px;color:#666">Tap the crown 👑</div><div class="emoji-grid" id="finalGrid"></div>`;let grid=document.getElementById('finalGrid');for(let i=0;i<12;i++){let d=document.createElement('div');d.className='emoji-btn';d.textContent=i===7?'👑':'💀';d.onclick=()=>{if(d.textContent==='👑')nextRound();else die('Wrong!');};grid.appendChild(d);}startProgress(8,()=>die('Too slow'));}else if(r===7){content.innerHTML=`<div style="font-weight:900;font-size:24px;margin-top:16px">FINAL 2 - LAST TAP WINS $500</div><div class="tapper yellow" id="lastTap" onclick="win()" style="font-size:28px;background:#FFD600;color:#000">TAP NOW TO WIN!</div>`;startProgress(5,()=>die('Second place!'));}
+let elimInt=setInterval(()=>{if(!playerAlive||state!=='game'){clearInterval(elimInt);return;}let drop=Math.floor(alive*0.02);alive=Math.max(2,alive-drop);document.getElementById('aliveLabel').textContent=`ALIVE: ${alive.toLocaleString()}`;document.getElementById('elimText').textContent=`🪓 ${(1000000-alive).toLocaleString()} ELIMINATED • ${alive.toLocaleString()} STILL ALIVE`;},250);}
+function startProgress(sec,onEnd){let bar=document.getElementById('roundProgress');bar.style.transition='none';bar.style.width='100%';setTimeout(()=>{bar.style.transition=`width ${sec}s linear`;bar.style.width='0%';},50);if(roundTimer)clearTimeout(roundTimer);roundTimer=setTimeout(onEnd,sec*1000);}
+function tapGreen(){let el=document.getElementById('tapper');if(el.classList.contains('wait')){die('You tapped too early!');return;}let reaction=Date.now()-greenTime;document.getElementById('elimText').textContent=`⚡ REACTION: ${reaction}ms`;nextRound();}
+function tapOdd(e){if(e==='🍔')nextRound();else die('Wrong emoji!');}
+function nextRound(){if(!playerAlive)return;alive=Math.floor(alive/2);if(alive<2)alive=2;setTimeout(()=>startRound(round+1),700);}
+function die(reason){if(!playerAlive)return;playerAlive=false;state='dead';myRank=alive+Math.floor(Math.random()*5000);document.getElementById('game').style.display='none';document.getElementById('result').style.display='block';document.getElementById('result').style.background='#FF0033';document.getElementById('resultDesc').textContent=`${reason} • You died at #${myRank.toLocaleString()} • ${alive.toLocaleString()} still alive`;document.getElementById('shareText').textContent=`I died at #${myRank.toLocaleString()} in 1 MILLION today. ${reason}. ${alive.toLocaleString()} survived me. Can you beat me? Tomorrow 8PM UTC - 1million.pages.dev`;document.getElementById('bgNumber').textContent='#'+myRank.toLocaleString();}
+function win(){document.getElementById('game').style.display='none';document.getElementById('result').style.display='block';document.getElementById('result').style.background='#FFD600';document.getElementById('result').style.color='#000';document.getElementById('resultTitle').textContent='YOU WON!';document.getElementById('resultDesc').textContent='YOU ARE THE LAST HUMAN STANDING • $500 + CROWN';document.getElementById('shareText').textContent=`I AM THE LAST HUMAN STANDING! I beat 1,000,000 people and won $500! 1million.pages.dev`;document.getElementById('bgNumber').textContent='👑';}
+function share(){let text=document.getElementById('shareText').textContent;window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank');}
+</script>
+</body>
+</html>
